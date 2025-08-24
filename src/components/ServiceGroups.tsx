@@ -72,6 +72,27 @@ const generateMockVendors = (groupName: string): Vendor[] => {
 
 const ServiceGroups: React.FC<ServiceGroupsProps> = ({ serviceGroups, onVendorSelect }) => {
   const [selectedVendors, setSelectedVendors] = useState<{ [key: string]: string[] }>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmitQuotes = async () => {
+    setIsSubmitting(true);
+    
+    // Simulate API call for submitting quote requests
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    setSubmitted(true);
+    setIsSubmitting(false);
+    
+    // Show success message and reset after 3 seconds
+    setTimeout(() => {
+      setSubmitted(false);
+    }, 3000);
+  };
+
+  const getTotalSelections = () => {
+    return Object.values(selectedVendors).flat().length;
+  };
 
   const handleVendorToggle = (groupName: string, vendor: Vendor) => {
     const groupSelections = selectedVendors[groupName] || [];
@@ -214,14 +235,32 @@ const ServiceGroups: React.FC<ServiceGroupsProps> = ({ serviceGroups, onVendorSe
         <Card className="bg-gradient-hero border-primary/20">
           <CardContent className="pt-6">
             <div className="text-center space-y-4">
-              <h3 className="text-xl font-semibold">Ready to Request Quotes?</h3>
-              <p className="text-muted-foreground">
-                You've selected {Object.values(selectedVendors).flat().length} service providers. 
-                We'll create individual tickets for each selection and vendors will respond within 24 hours.
-              </p>
-              <Button size="lg" className="bg-gradient-primary border-0">
-                Submit Quote Requests
-              </Button>
+              {submitted ? (
+                <div className="space-y-4">
+                  <CheckCircle2 className="w-16 h-16 text-accent mx-auto" />
+                  <h3 className="text-xl font-semibold text-accent">Quote Requests Submitted!</h3>
+                  <p className="text-muted-foreground">
+                    Your requests have been sent to {getTotalSelections()} service providers. 
+                    They will respond within 24 hours with detailed quotes.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold">Ready to Request Quotes?</h3>
+                  <p className="text-muted-foreground">
+                    You've selected {getTotalSelections()} service providers. 
+                    We'll create individual tickets for each selection and vendors will respond within 24 hours.
+                  </p>
+                  <Button 
+                    size="lg" 
+                    className="bg-gradient-primary border-0"
+                    onClick={handleSubmitQuotes}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Submitting...' : 'Submit Quote Requests'}
+                  </Button>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
