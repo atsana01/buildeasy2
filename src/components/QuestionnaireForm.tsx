@@ -133,17 +133,37 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ projectDescriptio
           {formData.hasArchDrawings && (
             <div className="space-y-2">
               <Label htmlFor="drawings" className="text-sm font-medium">Upload your architectural drawings</Label>
-              <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary transition-colors">
+              <div 
+                className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary transition-colors cursor-pointer"
+                onClick={() => document.getElementById('drawings')?.click()}
+              >
                 <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                <p className="text-sm text-muted-foreground">Click to upload or drag and drop</p>
+                {formData.drawingsFile ? (
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-primary">{formData.drawingsFile.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {(formData.drawingsFile.size / 1024 / 1024).toFixed(2)} MB
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">Click to upload or drag and drop</p>
+                    <p className="text-xs text-muted-foreground">
+                      PDF, CAD, STL, 3D files, images, renderings supported
+                    </p>
+                  </div>
+                )}
                 <Input
                   id="drawings"
                   type="file"
-                  accept=".pdf,.dwg,.jpg,.png"
+                  accept=".pdf,.dwg,.dxf,.stl,.obj,.fbx,.3ds,.max,.blend,.skp,.ifc,.rvt,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.webp,.svg,.ai,.psd,.eps"
                   className="hidden"
                   onChange={(e) => setFormData({...formData, drawingsFile: e.target.files?.[0]})}
                 />
               </div>
+              {formData.drawingsFile && (
+                <p className="text-xs text-accent">✓ File uploaded successfully</p>
+              )}
             </div>
           )}
         </div>
