@@ -5,31 +5,31 @@ import { Card, CardContent } from '@/components/ui/card';
 import QuestionnaireForm from '@/components/QuestionnaireForm';
 import ServiceGroups from '@/components/ServiceGroups';
 import { Sparkles, Home, Users, Zap, ChevronRight } from 'lucide-react';
-
 type Step = 'initial' | 'questionnaire' | 'services';
-
 interface ProjectData {
   description: string;
   formData?: any;
   serviceGroups?: string[];
 }
-
 const Index = () => {
   const [currentStep, setCurrentStep] = useState<Step>('initial');
-  const [projectData, setProjectData] = useState<ProjectData>({ description: '' });
+  const [projectData, setProjectData] = useState<ProjectData>({
+    description: ''
+  });
   const [selectedTickets, setSelectedTickets] = useState<any[]>([]);
-
   const handleProjectSubmit = () => {
     if (projectData.description.trim()) {
       setCurrentStep('questionnaire');
     }
   };
-
   const handleQuestionnaireComplete = (data: any) => {
-    setProjectData(prev => ({ ...prev, formData: data, serviceGroups: data.serviceGroups }));
+    setProjectData(prev => ({
+      ...prev,
+      formData: data,
+      serviceGroups: data.serviceGroups
+    }));
     setCurrentStep('services');
   };
-
   const handleVendorSelect = (groupName: string, vendor: any) => {
     const ticket = {
       id: `ticket-${Date.now()}-${Math.random()}`,
@@ -42,23 +42,18 @@ const Index = () => {
     };
     setSelectedTickets(prev => [...prev, ticket]);
   };
-
   const handleStartOver = () => {
     setCurrentStep('initial');
-    setProjectData({ description: '' });
+    setProjectData({
+      description: ''
+    });
     setSelectedTickets([]);
   };
-
   if (currentStep === 'questionnaire') {
-    return (
-      <div className="min-h-screen bg-gradient-hero py-12 px-4">
+    return <div className="min-h-screen bg-gradient-hero py-12 px-4">
         <div className="container max-w-4xl mx-auto">
           <div className="text-center mb-8">
-            <Button 
-              variant="ghost" 
-              onClick={handleStartOver}
-              className="mb-4"
-            >
+            <Button variant="ghost" onClick={handleStartOver} className="mb-4">
               ← Back to Start
             </Button>
             <h1 className="text-3xl font-bold mb-4">Let's Get More Details</h1>
@@ -68,49 +63,33 @@ const Index = () => {
             </p>
           </div>
           
-          <QuestionnaireForm 
-            projectDescription={projectData.description}
-            onComplete={handleQuestionnaireComplete}
-          />
+          <QuestionnaireForm projectDescription={projectData.description} onComplete={handleQuestionnaireComplete} />
         </div>
-      </div>
-    );
+      </div>;
   }
-
   if (currentStep === 'services') {
-    return (
-      <div className="min-h-screen bg-background py-12 px-4">
+    return <div className="min-h-screen bg-background py-12 px-4">
         <div className="container max-w-6xl mx-auto">
           <div className="text-center mb-8">
-            <Button 
-              variant="ghost" 
-              onClick={handleStartOver}
-              className="mb-4"
-            >
+            <Button variant="ghost" onClick={handleStartOver} className="mb-4">
               ← Start New Project
             </Button>
           </div>
           
-          <ServiceGroups 
-            serviceGroups={projectData.serviceGroups || []}
-            onVendorSelect={handleVendorSelect}
-          />
+          <ServiceGroups serviceGroups={projectData.serviceGroups || []} onVendorSelect={handleVendorSelect} />
         </div>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen bg-gradient-hero">
+  return <div className="min-h-screen bg-gradient-hero">
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           {/* Logo/Brand */}
           <div className="flex items-center justify-center space-x-2 mb-8">
             <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
-              <Home className="w-6 h-6 text-white" />
+              <Home className="w-6 h-6 text-white bg-[#000a0e]/0" />
             </div>
-            <span className="text-2xl font-bold">BuildMatch AI</span>
+            <span className="text-2xl font-bold">BuildEasy</span>
           </div>
 
           {/* Main Headline */}
@@ -134,20 +113,13 @@ const Index = () => {
                     <span>AI-Powered Project Analysis</span>
                   </div>
                   
-                  <Textarea
-                    placeholder="3 bedroom house with garden, pool, 2 baths..."
-                    value={projectData.description}
-                    onChange={(e) => setProjectData({ ...projectData, description: e.target.value })}
-                    className="min-h-[120px] text-lg resize-none border-2 focus:border-primary"
-                  />
+                  <Textarea placeholder="3 bedroom house with garden, pool, 2 baths..." value={projectData.description} onChange={e => setProjectData({
+                  ...projectData,
+                  description: e.target.value
+                })} className="min-h-[120px] text-lg resize-none border-2 focus:border-primary" />
                 </div>
                 
-                <Button 
-                  onClick={handleProjectSubmit}
-                  disabled={!projectData.description.trim()}
-                  size="lg"
-                  className="w-full bg-gradient-primary border-0 text-lg h-14"
-                >
+                <Button onClick={handleProjectSubmit} disabled={!projectData.description.trim()} size="lg" className="w-full bg-gradient-primary border-0 text-lg h-14">
                   Start My Project Journey
                   <ChevronRight className="w-5 h-5 ml-2" />
                 </Button>
@@ -198,28 +170,15 @@ const Index = () => {
           <div className="mt-16 text-center">
             <h2 className="text-2xl font-semibold mb-6">Try these examples:</h2>
             <div className="flex flex-wrap justify-center gap-3">
-              {[
-                "Modern 4-bedroom family home with open kitchen",
-                "Small guest house with sustainable materials",
-                "Pool renovation with landscaping",
-                "Office building with parking garage"
-              ].map((example, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setProjectData({ description: example })}
-                  className="text-sm hover:border-primary hover:text-primary"
-                >
+              {["Modern 4-bedroom family home with open kitchen", "Small guest house with sustainable materials", "Pool renovation with landscaping", "Office building with parking garage"].map((example, index) => <Button key={index} variant="outline" size="sm" onClick={() => setProjectData({
+              description: example
+            })} className="text-sm hover:border-primary hover:text-primary">
                   {example}
-                </Button>
-              ))}
+                </Button>)}
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
