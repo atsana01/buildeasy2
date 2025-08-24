@@ -28,12 +28,12 @@ const DualRangeSlider: React.FC<DualRangeSliderProps> = ({
     return Math.round(val / step) * step;
   }, [min, max, step]);
 
+  const [trackElement, setTrackElement] = useState<HTMLElement | null>(null);
+
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!isDragging) return;
+    if (!isDragging || !trackElement) return;
 
-    const rect = (e.currentTarget as HTMLElement)?.getBoundingClientRect();
-    if (!rect) return;
-
+    const rect = trackElement.getBoundingClientRect();
     const percentage = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
     const newValue = getValue(percentage);
 
@@ -42,7 +42,7 @@ const DualRangeSlider: React.FC<DualRangeSliderProps> = ({
     } else {
       onChange([value[0], Math.max(newValue, value[0] + step)]);
     }
-  }, [isDragging, getValue, onChange, value, step]);
+  }, [isDragging, trackElement, getValue, onChange, value, step]);
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(null);
@@ -63,7 +63,10 @@ const DualRangeSlider: React.FC<DualRangeSliderProps> = ({
     <div className="w-full space-y-4">
       <div className="relative h-8 flex items-center">
         {/* Track */}
-        <div className="w-full h-2 bg-muted rounded-full relative">
+        <div 
+          ref={setTrackElement}
+          className="w-full h-2 bg-muted rounded-full relative"
+        >
           {/* Active range */}
           <div
             className="absolute h-2 bg-gradient-primary rounded-full"

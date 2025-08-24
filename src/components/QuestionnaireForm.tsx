@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
+
 import DualRangeSlider from './DualRangeSlider';
 import { ChevronRight, Upload, CheckCircle } from 'lucide-react';
 
@@ -62,32 +62,71 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ projectDescriptio
       title: "Property & Permits",
       content: (
         <div className="space-y-6">
-          <div className="space-y-4">
-            <div className="flex items-center space-x-3">
-              <Checkbox
-                id="hasLand"
-                checked={formData.hasLand}
-                onCheckedChange={(checked) => setFormData({...formData, hasLand: checked as boolean})}
-              />
-              <Label htmlFor="hasLand" className="text-base font-medium">Do you own buildable land?</Label>
+          <div className="space-y-6">
+            <div className="space-y-3">
+              <Label className="text-base font-medium">Do you own buildable land?</Label>
+              <div className="flex space-x-3">
+                <Button
+                  type="button"
+                  variant={formData.hasLand ? "default" : "outline"}
+                  onClick={() => setFormData({...formData, hasLand: true})}
+                  className={formData.hasLand ? "bg-gradient-primary border-0" : ""}
+                >
+                  Yes
+                </Button>
+                <Button
+                  type="button"
+                  variant={!formData.hasLand ? "default" : "outline"}
+                  onClick={() => setFormData({...formData, hasLand: false})}
+                  className={!formData.hasLand ? "bg-gradient-primary border-0" : ""}
+                >
+                  No
+                </Button>
+              </div>
             </div>
             
-            <div className="flex items-center space-x-3">
-              <Checkbox
-                id="hasBuildPermit"
-                checked={formData.hasBuildPermit}
-                onCheckedChange={(checked) => setFormData({...formData, hasBuildPermit: checked as boolean})}
-              />
-              <Label htmlFor="hasBuildPermit" className="text-base font-medium">Do you have a build permit?</Label>
+            <div className="space-y-3">
+              <Label className="text-base font-medium">Do you have a build permit?</Label>
+              <div className="flex space-x-3">
+                <Button
+                  type="button"
+                  variant={formData.hasBuildPermit ? "default" : "outline"}
+                  onClick={() => setFormData({...formData, hasBuildPermit: true})}
+                  className={formData.hasBuildPermit ? "bg-gradient-primary border-0" : ""}
+                >
+                  Yes
+                </Button>
+                <Button
+                  type="button"
+                  variant={!formData.hasBuildPermit ? "default" : "outline"}
+                  onClick={() => setFormData({...formData, hasBuildPermit: false})}
+                  className={!formData.hasBuildPermit ? "bg-gradient-primary border-0" : ""}
+                >
+                  No
+                </Button>
+              </div>
             </div>
             
-            <div className="flex items-center space-x-3">
-              <Checkbox
-                id="hasArchDrawings"
-                checked={formData.hasArchDrawings}
-                onCheckedChange={(checked) => setFormData({...formData, hasArchDrawings: checked as boolean})}
-              />
-              <Label htmlFor="hasArchDrawings" className="text-base font-medium">Do you have architectural drawings?</Label>
+            <div className="space-y-3">
+              <Label className="text-base font-medium">Do you have architectural drawings?</Label>
+              <div className="flex space-x-3">
+                <Button
+                  type="button"
+                  variant={formData.hasArchDrawings ? "default" : "outline"}
+                  onClick={() => setFormData({...formData, hasArchDrawings: true})}
+                  className={formData.hasArchDrawings ? "bg-gradient-primary border-0" : ""}
+                >
+                  Yes
+                </Button>
+                <Button
+                  type="button"
+                  variant={!formData.hasArchDrawings ? "default" : "outline"}
+                  onClick={() => setFormData({...formData, hasArchDrawings: false})}
+                  className={!formData.hasArchDrawings ? "bg-gradient-primary border-0" : ""}
+                >
+                  No
+                </Button>
+              </div>
             </div>
           </div>
           
