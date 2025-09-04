@@ -6,6 +6,9 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/hooks/use-toast';
+import TicketDetailsModal from '@/components/TicketDetailsModal';
+import SendMessageModal from '@/components/SendMessageModal';
 import { 
   ArrowLeft, 
   Search, 
@@ -17,7 +20,12 @@ import {
   MapPin,
   DollarSign,
   Calendar,
-  RefreshCw
+  RefreshCw,
+  Eye,
+  MessageSquare,
+  Trash2,
+  ExternalLink,
+  User
 } from 'lucide-react';
 
 interface Ticket {
@@ -48,6 +56,10 @@ const Tickets = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Get tickets from navigation state
@@ -88,9 +100,37 @@ const Tickets = () => {
   };
 
   const handleRefreshVendors = () => {
-    // This would normally refresh the vendor data
-    // For demo purposes, we'll just show a success message
-    alert('Vendor data refreshed! New vendors may be available for your project.');
+    toast({
+      title: "Vendors Refreshed",
+      description: "Vendor data updated! New vendors may be available for your project.",
+    });
+  };
+
+  const handleViewDetails = (ticket: Ticket) => {
+    setSelectedTicket(ticket);
+    setIsDetailsModalOpen(true);
+  };
+
+  const handleSendMessage = (ticket: Ticket) => {
+    setSelectedTicket(ticket);
+    setIsMessageModalOpen(true);
+  };
+
+  const handleDeleteRequest = (ticketId: string) => {
+    setTickets(prevTickets => prevTickets.filter(t => t.id !== ticketId));
+    toast({
+      title: "Request Deleted",
+      description: "The quote request has been successfully deleted.",
+      variant: "destructive",
+    });
+  };
+
+  const handlePortfolioClick = (ticket: Ticket) => {
+    // In the future, this will redirect to the vendor's portfolio page
+    toast({
+      title: "Portfolio Coming Soon",
+      description: `${ticket.vendor.name}'s portfolio will be available once vendors provide their website links.`,
+    });
   };
 
   return (
@@ -210,26 +250,42 @@ const Tickets = () => {
           <div className="space-y-4">
             {filteredTickets.map((ticket) => (
               <Card key={ticket.id} className="shadow-card hover:shadow-elegant transition-shadow">
-                <CardHeader>
+                <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3">
-                        <CardTitle className="text-lg">{ticket.vendor.name}</CardTitle>
-                        {ticket.vendor.verified && (
-                          <CheckCircle2 className="w-4 h-4 text-accent" />
-                        )}
-                        {getStatusBadge(ticket.status)}
+                    <div className="flex items-start gap-3 flex-1">
+                      {/* Vendor Profile Picture */}
+                      <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0">
+                        {ticket.vendor.name.charAt(0)}
                       </div>
-                      <Badge variant="outline" className="w-fit">
-                        {ticket.groupName}
-                      </Badge>
+                      
+                      <div className="space-y-2 flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <CardTitle className="text-lg truncate">{ticket.vendor.name}</CardTitle>
+                          {ticket.vendor.verified && (
+                            <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
+                          )}
+                          {getStatusBadge(ticket.status)}
+                        </div>
+                        <Badge variant="outline" className="w-fit">
+                          {ticket.groupName}
+                        </Badge>
+                      </div>
                     </div>
                     
-                    <div className="text-right text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
+                    <div className="text-right text-sm text-muted-foreground space-y-2 shrink-0 ml-2">
+                      <div className="flex items-center gap-1 justify-end">
                         <Calendar className="w-3 h-3" />
-                        {ticket.createdAt.toLocaleDateString()}
+                        <span className="whitespace-nowrap">{ticket.createdAt.toLocaleDateString()}</span>
                       </div>
+                      {/* Portfolio Button */}
+                      <Button
+                        size="sm"
+                        onClick={() => handlePortfolioClick(ticket)}
+                        className="bg-purple text-purple-foreground hover:bg-purple/90 text-xs h-6 px-2"
+                      >
+                        <ExternalLink className="w-3 h-3 mr-1" />
+                        PORTFOLIO
+                      </Button>
                     </div>
                   </div>
                 </CardHeader>
@@ -237,17 +293,17 @@ const Tickets = () => {
                 <CardContent>
                   <div className="space-y-4">
                     {/* Vendor Details */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-6 text-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
                         <div className="flex items-center space-x-1">
-                          <Star className="w-4 h-4 fill-blue-400 text-blue-400" />
+                          <Star className="w-4 h-4 fill-primary text-primary" />
                           <span className="font-medium">{ticket.vendor.rating.toFixed(1)}</span>
                           <span className="text-muted-foreground">({ticket.vendor.reviews})</span>
                         </div>
                         
                         <div className="flex items-center space-x-1">
                           <MapPin className="w-4 h-4 text-muted-foreground" />
-                          <span>{ticket.vendor.location}</span>
+                          <span className="truncate max-w-[120px]">{ticket.vendor.location}</span>
                         </div>
                         
                         <div className="flex items-center space-x-1">
@@ -260,6 +316,11 @@ const Tickets = () => {
                           <span>{ticket.vendor.deliveryTime}</span>
                         </div>
                       </div>
+                      
+                      <div className="text-xs text-muted-foreground">
+                        <User className="w-3 h-3 inline mr-1" />
+                        {ticket.vendor.specialty}
+                      </div>
                     </div>
                     
                     <Separator />
@@ -267,7 +328,7 @@ const Tickets = () => {
                     {/* Project Description */}
                     <div>
                       <h4 className="font-medium mb-2">Project Description</h4>
-                      <p className="text-sm text-muted-foreground bg-muted/50 p-3 rounded">
+                      <p className="text-sm text-muted-foreground bg-muted/50 p-3 rounded line-clamp-3 leading-relaxed">
                         {ticket.projectDescription}
                       </p>
                     </div>
@@ -289,16 +350,37 @@ const Tickets = () => {
                     )}
                     
                     {/* Actions */}
-                    <div className="flex gap-2 pt-2">
-                      <Button variant="outline" size="sm">
-                        View Details
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleViewDetails(ticket)}
+                        className="flex items-center gap-2 hover:bg-primary/10 transition-colors"
+                      >
+                        <Eye className="w-4 h-4" />
+                        <span className="hidden sm:inline">View Details</span>
+                        <span className="sm:hidden">Details</span>
                       </Button>
-                      <Button variant="outline" size="sm">
-                        Message Vendor
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleSendMessage(ticket)}
+                        className="flex items-center gap-2 hover:bg-accent/10 transition-colors"
+                      >
+                        <MessageSquare className="w-4 h-4" />
+                        <span className="hidden sm:inline">Send Message</span>
+                        <span className="sm:hidden">Message</span>
                       </Button>
                       {ticket.status === 'pending' && (
-                        <Button variant="outline" size="sm">
-                          Cancel Request
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleDeleteRequest(ticket.id)}
+                          className="flex items-center gap-2 hover:bg-destructive/10 text-destructive hover:text-destructive transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          <span className="hidden sm:inline">Delete Request</span>
+                          <span className="sm:hidden">Delete</span>
                         </Button>
                       )}
                     </div>
@@ -309,6 +391,19 @@ const Tickets = () => {
           </div>
         )}
       </div>
+
+      {/* Modals */}
+      <TicketDetailsModal
+        ticket={selectedTicket}
+        isOpen={isDetailsModalOpen}
+        onClose={() => setIsDetailsModalOpen(false)}
+      />
+      
+      <SendMessageModal
+        ticket={selectedTicket}
+        isOpen={isMessageModalOpen}
+        onClose={() => setIsMessageModalOpen(false)}
+      />
     </div>
   );
 };

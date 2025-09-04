@@ -31,6 +31,10 @@ All colors MUST be HSL.
     --accent-foreground: 255 255 255;
     --accent-glow: 175 70% 65%;
 
+    --purple: 260 60% 65%;
+    --purple-foreground: 255 255 255;
+    --purple-light: 260 40% 85%;
+
     --destructive: 0 84% 60%;
     --destructive-foreground: 255 255 255;
 
