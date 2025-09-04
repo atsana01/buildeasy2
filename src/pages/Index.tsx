@@ -76,7 +76,12 @@ const Index = () => {
             </Button>
           </div>
           
-          <ServiceGroups serviceGroups={projectData.serviceGroups || []} onVendorSelect={handleVendorSelect} />
+          <ServiceGroups 
+            serviceGroups={projectData.serviceGroups || []} 
+            onVendorSelect={handleVendorSelect}
+            projectDescription={projectData.description}
+            formData={projectData.formData}
+          />
         </div>
       </div>;
   }

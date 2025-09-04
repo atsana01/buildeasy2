@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -27,6 +28,8 @@ interface ServiceGroup {
 interface ServiceGroupsProps {
   serviceGroups: string[];
   onVendorSelect: (groupName: string, vendor: Vendor) => void;
+  projectDescription?: string;
+  formData?: any;
 }
 
 const mockVendors: { [key: string]: Vendor[] } = {
@@ -70,7 +73,8 @@ const generateMockVendors = (groupName: string): Vendor[] => {
   }));
 };
 
-const ServiceGroups: React.FC<ServiceGroupsProps> = ({ serviceGroups, onVendorSelect }) => {
+const ServiceGroups: React.FC<ServiceGroupsProps> = ({ serviceGroups, onVendorSelect, projectDescription = '', formData = {} }) => {
+  const navigate = useNavigate();
   const [selectedVendors, setSelectedVendors] = useState<{ [key: string]: string[] }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -78,16 +82,33 @@ const ServiceGroups: React.FC<ServiceGroupsProps> = ({ serviceGroups, onVendorSe
   const handleSubmitQuotes = async () => {
     setIsSubmitting(true);
     
+    // Create tickets for each selected vendor
+    const tickets = [];
+    Object.entries(selectedVendors).forEach(([groupName, vendorIds]) => {
+      const vendors = generateMockVendors(groupName);
+      vendorIds.forEach(vendorId => {
+        const vendor = vendors.find(v => v.id === vendorId);
+        if (vendor) {
+          tickets.push({
+            id: `ticket-${Date.now()}-${Math.random()}`,
+            groupName,
+            vendor,
+            projectDescription,
+            formData,
+            status: 'pending' as const,
+            createdAt: new Date()
+          });
+        }
+      });
+    });
+    
     // Simulate API call for submitting quote requests
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    setSubmitted(true);
     setIsSubmitting(false);
     
-    // Show success message and reset after 3 seconds
-    setTimeout(() => {
-      setSubmitted(false);
-    }, 3000);
+    // Navigate to tickets page with created tickets
+    navigate('/tickets', { state: { tickets } });
   };
 
   const getTotalSelections = () => {
@@ -185,7 +206,7 @@ const ServiceGroups: React.FC<ServiceGroupsProps> = ({ serviceGroups, onVendorSe
                             
                             <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                               <div className="flex items-center space-x-1">
-                                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                <Star className="w-4 h-4 fill-blue-400 text-blue-400" />
                                 <span className="font-medium">{vendor.rating.toFixed(1)}</span>
                                 <span>({vendor.reviews} reviews)</span>
                               </div>
