@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
@@ -17,6 +17,28 @@ const Index = () => {
     description: ''
   });
   const [selectedTickets, setSelectedTickets] = useState<any[]>([]);
+  const [animatedText, setAnimatedText] = useState('3-bedroom modern house');
+
+  const textVariations = [
+    '3-bedroom modern house',
+    '2-bathroom renovation', 
+    'pool and garden design',
+    'kitchen remodel',
+    'office building',
+    'sustainable home'
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnimatedText(prev => {
+        const currentIndex = textVariations.indexOf(prev);
+        const nextIndex = (currentIndex + 1) % textVariations.length;
+        return textVariations[nextIndex];
+      });
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, []);
   const handleProjectSubmit = () => {
     if (projectData.description.trim()) {
       setCurrentStep('questionnaire');
@@ -87,10 +109,10 @@ const Index = () => {
   }
   return <div className="min-h-screen bg-gradient-hero">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 py-20">
+      <div className="container mx-auto px-4 pt-8 pb-20">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           {/* Logo/Brand */}
-          <div className="flex items-center justify-center space-x-2 mb-8">
+          <div className="flex items-center justify-center space-x-2 mb-12">
             <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
               <Home className="w-6 h-6 text-white bg-[#000a0e]/0" />
             </div>
@@ -118,10 +140,15 @@ const Index = () => {
                     <span>AI-Powered Project Analysis</span>
                   </div>
                   
-                  <Textarea placeholder="3 bedroom house with garden, pool, 2 baths..." value={projectData.description} onChange={e => setProjectData({
-                  ...projectData,
-                  description: e.target.value
-                })} className="min-h-[120px] text-lg resize-none border-2 focus:border-primary" />
+                  <Textarea 
+                    placeholder={`I want a ${animatedText}...`}
+                    value={projectData.description} 
+                    onChange={e => setProjectData({
+                      ...projectData,
+                      description: e.target.value
+                    })} 
+                    className="min-h-[120px] text-lg resize-none border-2 focus:border-primary" 
+                  />
                 </div>
                 
                 <Button onClick={handleProjectSubmit} disabled={!projectData.description.trim()} size="lg" className="w-full bg-gradient-primary border-0 text-lg h-14">
