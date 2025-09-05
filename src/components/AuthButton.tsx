@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { ChevronDown, User, LogOut } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,13 +13,29 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 interface AuthButtonProps {
-  variant: 'client' | 'vendor';
+  variant?: 'client' | 'vendor';
 }
 
 export const AuthButton: React.FC<AuthButtonProps> = ({ variant }) => {
   const { user, signOut } = useAuth();
+  const [userType, setUserType] = useState<'client' | 'vendor' | null>(null);
 
-  if (user) {
+  useEffect(() => {
+    if (user) {
+      supabase
+        .from('profiles')
+        .select('user_type')
+        .eq('user_id', user.id)
+        .single()
+        .then(({ data }) => {
+          setUserType(data?.user_type || 'client');
+        });
+    } else {
+      setUserType(null);
+    }
+  }, [user]);
+
+  if (user && userType) {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -30,12 +47,12 @@ export const AuthButton: React.FC<AuthButtonProps> = ({ variant }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem asChild>
-            <Link to={variant === 'vendor' ? '/vendor-dashboard' : '/dashboard'}>
+            <Link to={userType === 'vendor' ? '/vendor-dashboard' : '/dashboard'}>
               Dashboard
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link to="/profile">Profile</Link>
+            <Link to="/profile">Profile Settings</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={signOut}>
@@ -47,11 +64,30 @@ export const AuthButton: React.FC<AuthButtonProps> = ({ variant }) => {
     );
   }
 
-  return (
-    <Button asChild variant="outline" className="gap-2">
-      <Link to={`/auth?type=${variant}`}>
-        {variant === 'client' ? 'Client Login' : 'Vendor Login'}
-      </Link>
-    </Button>
-  );
+  // Show both login options only if no user is logged in
+  if (!user && !variant) {
+    return (
+      <div className="flex items-center gap-3">
+        <Button asChild variant="outline" size="sm">
+          <Link to="/auth?type=client">Client Login</Link>
+        </Button>
+        <Button asChild variant="outline" size="sm">
+          <Link to="/auth?type=vendor">Vendor Login</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  // Show specific login button when variant is provided
+  if (!user && variant) {
+    return (
+      <Button asChild variant="outline" className="gap-2">
+        <Link to={`/auth?type=${variant}`}>
+          {variant === 'client' ? 'Client Login' : 'Vendor Login'}
+        </Link>
+      </Button>
+    );
+  }
+
+  return null;
 };

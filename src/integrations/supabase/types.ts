@@ -64,9 +64,11 @@ export type Database = {
           avatar_url: string | null
           company_name: string | null
           created_at: string
+          email_change_count: number | null
           email_verified: boolean | null
           full_name: string | null
           id: string
+          last_email_change: string | null
           onboarding_completed: boolean | null
           phone_number: string | null
           updated_at: string
@@ -78,9 +80,11 @@ export type Database = {
           avatar_url?: string | null
           company_name?: string | null
           created_at?: string
+          email_change_count?: number | null
           email_verified?: boolean | null
           full_name?: string | null
           id?: string
+          last_email_change?: string | null
           onboarding_completed?: boolean | null
           phone_number?: string | null
           updated_at?: string
@@ -92,9 +96,11 @@ export type Database = {
           avatar_url?: string | null
           company_name?: string | null
           created_at?: string
+          email_change_count?: number | null
           email_verified?: boolean | null
           full_name?: string | null
           id?: string
+          last_email_change?: string | null
           onboarding_completed?: boolean | null
           phone_number?: string | null
           updated_at?: string
@@ -208,6 +214,7 @@ export type Database = {
         Row: {
           availability_status: boolean | null
           bio: string | null
+          business_address: string | null
           business_name: string
           created_at: string
           id: string
@@ -221,6 +228,7 @@ export type Database = {
           total_reviews: number | null
           updated_at: string
           user_id: string
+          vat_id: string | null
           verification_status:
             | Database["public"]["Enums"]["verification_status"]
             | null
@@ -229,6 +237,7 @@ export type Database = {
         Insert: {
           availability_status?: boolean | null
           bio?: string | null
+          business_address?: string | null
           business_name: string
           created_at?: string
           id?: string
@@ -242,6 +251,7 @@ export type Database = {
           total_reviews?: number | null
           updated_at?: string
           user_id: string
+          vat_id?: string | null
           verification_status?:
             | Database["public"]["Enums"]["verification_status"]
             | null
@@ -250,6 +260,7 @@ export type Database = {
         Update: {
           availability_status?: boolean | null
           bio?: string | null
+          business_address?: string | null
           business_name?: string
           created_at?: string
           id?: string
@@ -263,6 +274,7 @@ export type Database = {
           total_reviews?: number | null
           updated_at?: string
           user_id?: string
+          vat_id?: string | null
           verification_status?:
             | Database["public"]["Enums"]["verification_status"]
             | null

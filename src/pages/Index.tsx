@@ -119,11 +119,8 @@ const Index = () => {
               <span className="text-2xl font-bold">BuildEasy</span>
             </div>
             
-            {/* Auth Buttons */}
-            <div className="flex items-center gap-3">
-              <AuthButton variant="client" />
-              <AuthButton variant="vendor" />
-            </div>
+            {/* Auth Button */}
+            <AuthButton />
           </div>
 
           {/* Main Headline */}

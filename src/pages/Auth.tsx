@@ -27,12 +27,26 @@ const loginSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-const signupSchema = z.object({
+const baseSignupSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   fullName: z.string().min(2, 'Full name must be at least 2 characters'),
   userType: z.enum(['client', 'vendor']),
   companyName: z.string().optional(),
+  vatId: z.string().optional(),
+  businessAddress: z.string().optional(),
+  phoneNumber: z.string().optional(),
+  businessName: z.string().optional(),
+});
+
+const signupSchema = baseSignupSchema.refine((data) => {
+  if (data.userType === 'vendor') {
+    return data.businessName && data.vatId && data.businessAddress;
+  }
+  return true;
+}, {
+  message: "Business name, VAT ID, and business address are required for vendors",
+  path: ["businessName"]
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
@@ -57,14 +71,37 @@ const Auth = () => {
       password: '', 
       fullName: '', 
       userType: initialUserType,
-      companyName: '' 
+      companyName: '',
+      vatId: '',
+      businessAddress: '',
+      phoneNumber: '',
+      businessName: ''
     }
   });
 
   useEffect(() => {
-    if (user) {
-      navigate('/dashboard');
-    }
+    const redirectUser = async () => {
+      if (user) {
+        try {
+          const { data } = await supabase
+            .from('profiles')
+            .select('user_type')
+            .eq('user_id', user.id)
+            .single();
+          
+          if (data?.user_type === 'vendor') {
+            navigate('/vendor-dashboard');
+          } else {
+            navigate('/dashboard');
+          }
+        } catch (error) {
+          // Fallback to dashboard if profile not found
+          navigate('/dashboard');
+        }
+      }
+    };
+
+    redirectUser();
   }, [user, navigate]);
 
   const handleLogin = async (data: LoginForm) => {
@@ -101,6 +138,10 @@ const Auth = () => {
             full_name: data.fullName,
             user_type: data.userType,
             company_name: data.companyName || null,
+            phone_number: data.phoneNumber || null,
+            vat_id: data.vatId || null,
+            business_address: data.businessAddress || null,
+            business_name: data.businessName || null,
           }
         }
       });
@@ -318,19 +359,63 @@ const Auth = () => {
                     />
 
                     {signupForm.watch('userType') === 'vendor' && (
-                      <FormField
-                        control={signupForm.control}
-                        name="companyName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Company Name (Optional)</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Your Company" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      <div className="space-y-4">
+                        <FormField
+                          control={signupForm.control}
+                          name="businessName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Business Name *</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Your Business Name" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={signupForm.control}
+                          name="vatId"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>VAT ID *</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Your VAT ID" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={signupForm.control}
+                          name="businessAddress"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Business Address *</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Your Business Address" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={signupForm.control}
+                          name="phoneNumber"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Phone Number</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Your Phone Number" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     )}
 
                     <Button type="submit" className="w-full" disabled={loading}>
