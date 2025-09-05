@@ -19,6 +19,7 @@ interface FormData {
   bathroomSizes: { [key: number]: number };
   poolSize?: number;
   gardenSize?: number;
+  balconySize?: number;
   showerOrBath: 'shower' | 'bath' | 'both';
   budget: [number, number];
   deliveryTime: number;
@@ -257,6 +258,17 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ projectDescriptio
                   />
                 </div>
               )}
+              
+              <div className="space-y-2">
+                <Label htmlFor="balconySize" className="text-base font-medium">Balcony Size (sqm)</Label>
+                <Input
+                  id="balconySize"
+                  type="number"
+                  placeholder="e.g., 12"
+                  value={formData.balconySize || ''}
+                  onChange={(e) => setFormData({...formData, balconySize: parseInt(e.target.value) || undefined})}
+                />
+              </div>
               
               <div className="space-y-3">
                 <Label className="text-base font-medium">Bathroom preference</Label>
