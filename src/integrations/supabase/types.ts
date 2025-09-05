@@ -284,72 +284,30 @@ export type Database = {
       }
     }
     Views: {
-      vendor_profiles_public: {
-        Row: {
-          availability_status: boolean | null
-          bio: string | null
-          business_name: string | null
-          created_at: string | null
-          id: string | null
-          location: string | null
-          portfolio_images: Json | null
-          rating: number | null
-          response_time_hours: number | null
-          services_offered: Json | null
-          specialty: string[] | null
-          total_reviews: number | null
-          updated_at: string | null
-          user_id: string | null
-          verification_status:
-            | Database["public"]["Enums"]["verification_status"]
-            | null
-          years_experience: number | null
-        }
-        Insert: {
-          availability_status?: boolean | null
-          bio?: string | null
-          business_name?: string | null
-          created_at?: string | null
-          id?: string | null
-          location?: string | null
-          portfolio_images?: Json | null
-          rating?: number | null
-          response_time_hours?: number | null
-          services_offered?: Json | null
-          specialty?: string[] | null
-          total_reviews?: number | null
-          updated_at?: string | null
-          user_id?: string | null
-          verification_status?:
-            | Database["public"]["Enums"]["verification_status"]
-            | null
-          years_experience?: number | null
-        }
-        Update: {
-          availability_status?: boolean | null
-          bio?: string | null
-          business_name?: string | null
-          created_at?: string | null
-          id?: string | null
-          location?: string | null
-          portfolio_images?: Json | null
-          rating?: number | null
-          response_time_hours?: number | null
-          services_offered?: Json | null
-          specialty?: string[] | null
-          total_reviews?: number | null
-          updated_at?: string | null
-          user_id?: string | null
-          verification_status?:
-            | Database["public"]["Enums"]["verification_status"]
-            | null
-          years_experience?: number | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_public_vendor_profiles: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          availability_status: boolean
+          bio: string
+          business_name: string
+          created_at: string
+          id: string
+          location: string
+          portfolio_images: Json
+          rating: number
+          response_time_hours: number
+          services_offered: Json
+          specialty: string[]
+          total_reviews: number
+          updated_at: string
+          user_id: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
+          years_experience: number
+        }[]
+      }
     }
     Enums: {
       message_type: "text" | "file" | "quote" | "system"
