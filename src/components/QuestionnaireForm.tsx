@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
 import DualRangeSlider from './DualRangeSlider';
+import DeliveryTimeSlider from './DeliveryTimeSlider';
 import { ChevronRight, Upload, CheckCircle } from 'lucide-react';
 
 interface FormData {
@@ -16,8 +17,11 @@ interface FormData {
   totalSqm?: number;
   bedroomSizes: { [key: number]: number };
   bathroomSizes: { [key: number]: number };
+  poolSize?: number;
+  gardenSize?: number;
   showerOrBath: 'shower' | 'bath' | 'both';
   budget: [number, number];
+  deliveryTime: number;
 }
 
 interface QuestionnaireFormProps {
@@ -34,7 +38,8 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ projectDescriptio
     bedroomSizes: {},
     bathroomSizes: {},
     showerOrBath: 'both',
-    budget: [100000, 500000]
+    budget: [10000, 500000],
+    deliveryTime: 12
   });
 
   // Extract number of bedrooms and bathrooms from description
@@ -42,6 +47,8 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ projectDescriptio
   const bathroomMatch = projectDescription.match(/(\d+)\s*bath/i);
   const numBedrooms = bedroomMatch ? parseInt(bedroomMatch[1]) : 3;
   const numBathrooms = bathroomMatch ? parseInt(bathroomMatch[1]) : 2;
+  const hasPool = projectDescription.toLowerCase().includes('pool');
+  const hasGarden = projectDescription.toLowerCase().includes('garden');
 
   // Generate service groups based on project description
   const generateServiceGroups = (): string[] => {
@@ -225,6 +232,32 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ projectDescriptio
                 ))}
               </div>
               
+              {hasPool && (
+                <div className="space-y-2">
+                  <Label htmlFor="poolSize" className="text-base font-medium">Pool Size (sqm)</Label>
+                  <Input
+                    id="poolSize"
+                    type="number"
+                    placeholder="e.g., 40"
+                    value={formData.poolSize || ''}
+                    onChange={(e) => setFormData({...formData, poolSize: parseInt(e.target.value) || undefined})}
+                  />
+                </div>
+              )}
+              
+              {hasGarden && (
+                <div className="space-y-2">
+                  <Label htmlFor="gardenSize" className="text-base font-medium">Garden Size (sqm)</Label>
+                  <Input
+                    id="gardenSize"
+                    type="number"
+                    placeholder="e.g., 100"
+                    value={formData.gardenSize || ''}
+                    onChange={(e) => setFormData({...formData, gardenSize: parseInt(e.target.value) || undefined})}
+                  />
+                </div>
+              )}
+              
               <div className="space-y-3">
                 <Label className="text-base font-medium">Bathroom preference</Label>
                 <div className="flex space-x-4">
@@ -256,12 +289,22 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ projectDescriptio
             <Label className="text-base font-medium mb-4 block">What's your budget range?</Label>
             <div className="px-4">
               <DualRangeSlider
-                min={50000}
-                max={5000000}
-                step={10000}
+                min={10000}
+                max={1000000}
+                step={5000}
                 value={formData.budget}
                 onChange={(budget) => setFormData({...formData, budget})}
-                formatValue={(val) => `$${val.toLocaleString()}`}
+                formatValue={(val) => val >= 1000000 ? '$1M+' : `$${val.toLocaleString()}`}
+              />
+            </div>
+          </div>
+          
+          <div>
+            <Label className="text-base font-medium mb-4 block">Expected Delivery Time</Label>
+            <div className="px-4">
+              <DeliveryTimeSlider
+                value={formData.deliveryTime}
+                onChange={(deliveryTime) => setFormData({...formData, deliveryTime})}
               />
             </div>
           </div>

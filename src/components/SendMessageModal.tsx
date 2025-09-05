@@ -29,7 +29,7 @@ const SendMessageModal = ({ ticket, isOpen, onClose }: SendMessageModalProps) =>
     {
       id: '1',
       sender: 'user',
-      content: `Hi ${ticket?.vendor.name}, I've submitted a quote request for ${ticket?.groupName}. Please let me know if you need any additional information.`,
+      content: `Hi ${ticket?.vendor?.displayName || ticket?.vendor?.name || 'there'}, I've submitted a quote request for ${ticket?.groupName}. Please let me know if you need any additional information.`,
       timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
     },
   ]);
@@ -72,7 +72,7 @@ const SendMessageModal = ({ ticket, isOpen, onClose }: SendMessageModalProps) =>
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-4xl max-h-[95vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
             <MessageCircle className="w-5 h-5 text-primary" />
@@ -136,26 +136,16 @@ const SendMessageModal = ({ ticket, isOpen, onClose }: SendMessageModalProps) =>
           </div>
 
           {/* Message Input */}
-          <div className="border-t pt-4 space-y-3">
-            <div className="space-y-2">
-              <Label htmlFor="subject">Subject (Optional)</Label>
-              <Input
-                id="subject"
-                placeholder="Message subject..."
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                className="text-sm"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="message">Your Message</Label>
+          <div className="border-t pt-6 space-y-4">
+            <div className="space-y-3">
+              <Label htmlFor="message" className="text-base font-medium">Compose Message</Label>
               <Textarea
                 id="message"
                 placeholder="Type your message here... (Ctrl+Enter to send)"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={handleKeyPress}
-                className="min-h-[80px] text-sm resize-none"
+                className="min-h-[120px] text-base resize-none border-2 focus:border-primary rounded-lg p-4"
               />
             </div>
             <div className="flex justify-between items-center">

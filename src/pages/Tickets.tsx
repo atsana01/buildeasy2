@@ -371,7 +371,7 @@ const Tickets = () => {
                         <span className="hidden sm:inline">Send Message</span>
                         <span className="sm:hidden">Message</span>
                       </Button>
-                      {ticket.status === 'pending' && (
+                      {(ticket.status === 'pending' || ticket.status === 'quoted') && (
                         <Button 
                           variant="outline" 
                           size="sm"

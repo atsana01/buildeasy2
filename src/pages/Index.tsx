@@ -20,12 +20,10 @@ const Index = () => {
   const [animatedText, setAnimatedText] = useState('3-bedroom modern house');
 
   const textVariations = [
-    '3-bedroom modern house',
-    '2-bathroom renovation', 
-    'pool and garden design',
-    'kitchen remodel',
-    'office building',
-    'sustainable home'
+    '4 bedroom modern house, 2 large baths, landscaped garden and pool',
+    'large modern house with 2 bedrooms and a single shower with an indoor pool',
+    'minimalistic house, 2 bedrooms, 1 bath, garden',
+    'large complex, 15 units of single bedroom houses, underground parking'
   ];
 
   useEffect(() => {
@@ -112,7 +110,7 @@ const Index = () => {
       <div className="container mx-auto px-4 pt-8 pb-20">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           {/* Logo/Brand */}
-          <div className="flex items-center justify-center space-x-2 mb-12">
+          <div className="flex items-center justify-center space-x-2 mb-16">
             <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
               <Home className="w-6 h-6 text-white bg-[#000a0e]/0" />
             </div>
@@ -131,15 +129,10 @@ const Index = () => {
           </div>
 
           {/* Main Input Area */}
-          <Card className="max-w-3xl mx-auto shadow-elegant">
+          <Card className="max-w-3xl mx-auto shadow-elegant bg-background/70 backdrop-blur-sm border border-white/20">
             <CardContent className="p-8">
               <div className="space-y-6">
                 <div className="space-y-3">
-                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                    <Sparkles className="w-4 h-4 text-primary" />
-                    <span>AI-Powered Project Analysis</span>
-                  </div>
-                  
                   <Textarea 
                     placeholder={`I want a ${animatedText}...`}
                     value={projectData.description} 
@@ -151,13 +144,34 @@ const Index = () => {
                   />
                 </div>
                 
-                <Button onClick={handleProjectSubmit} disabled={!projectData.description.trim()} size="lg" className="w-full bg-gradient-primary border-0 text-lg h-14">
-                  Start My Project Journey
-                  <ChevronRight className="w-5 h-5 ml-2" />
-                </Button>
+                <div className="flex justify-center">
+                  <Button onClick={handleProjectSubmit} disabled={!projectData.description.trim()} size="sm" className="bg-gradient-primary border-0 px-8">
+                    Build
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
+
+          {/* Example Projects */}
+          <div className="mt-8 text-center">
+            <h2 className="text-xl font-semibold mb-4">Try these examples:</h2>
+            <div className="flex flex-wrap justify-center gap-3">
+              {["4 bedroom modern house, 2 large baths, landscaped garden and pool", "Large modern house with 2 bedrooms and a single shower with an indoor pool", "Minimalistic house, 2 bedrooms, 1 bath, garden", "Large complex, 15 units of single bedroom houses, underground parking"].map((example, index) => (
+                <Button 
+                  key={index} 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setProjectData({
+                    description: example
+                  })} 
+                  className="text-sm hover:border-primary hover:text-primary"
+                >
+                  {example}
+                </Button>
+              ))}
+            </div>
+          </div>
 
           {/* Feature Cards */}
           <div className="grid md:grid-cols-3 gap-6 mt-16 max-w-5xl mx-auto">
@@ -198,17 +212,6 @@ const Index = () => {
             </Card>
           </div>
 
-          {/* Example Projects */}
-          <div className="mt-16 text-center">
-            <h2 className="text-2xl font-semibold mb-6">Try these examples:</h2>
-            <div className="flex flex-wrap justify-center gap-3">
-              {["Modern 4-bedroom family home with open kitchen", "Small guest house with sustainable materials", "Pool renovation with landscaping", "Office building with parking garage"].map((example, index) => <Button key={index} variant="outline" size="sm" onClick={() => setProjectData({
-              description: example
-            })} className="text-sm hover:border-primary hover:text-primary">
-                  {example}
-                </Button>)}
-            </div>
-          </div>
         </div>
       </div>
     </div>;
