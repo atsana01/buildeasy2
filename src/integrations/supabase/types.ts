@@ -284,10 +284,75 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      vendor_profiles_public: {
+        Row: {
+          availability_status: boolean | null
+          bio: string | null
+          business_name: string | null
+          created_at: string | null
+          id: string | null
+          location: string | null
+          portfolio_images: Json | null
+          rating: number | null
+          response_time_hours: number | null
+          services_offered: Json | null
+          specialty: string[] | null
+          total_reviews: number | null
+          updated_at: string | null
+          user_id: string | null
+          verification_status:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          years_experience: number | null
+        }
+        Insert: {
+          availability_status?: boolean | null
+          bio?: string | null
+          business_name?: string | null
+          created_at?: string | null
+          id?: string | null
+          location?: string | null
+          portfolio_images?: Json | null
+          rating?: number | null
+          response_time_hours?: number | null
+          services_offered?: Json | null
+          specialty?: string[] | null
+          total_reviews?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          years_experience?: number | null
+        }
+        Update: {
+          availability_status?: boolean | null
+          bio?: string | null
+          business_name?: string | null
+          created_at?: string | null
+          id?: string | null
+          location?: string | null
+          portfolio_images?: Json | null
+          rating?: number | null
+          response_time_hours?: number | null
+          services_offered?: Json | null
+          specialty?: string[] | null
+          total_reviews?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          years_experience?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      can_access_vendor_sensitive_data: {
+        Args: { vendor_user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       message_type: "text" | "file" | "quote" | "system"
