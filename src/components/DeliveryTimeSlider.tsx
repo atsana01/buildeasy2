@@ -16,7 +16,7 @@ const DeliveryTimeSlider: React.FC<DeliveryTimeSliderProps> = ({ value, onChange
     { value: 12, label: '12 months' },
     { value: 18, label: '18 months' },
     { value: 24, label: '24 months' },
-    { value: 25, label: '2 years+ }
+    { value: 25, label: '2+ years' }
   ];
 
   const getPercentage = useCallback((val: number) => {
