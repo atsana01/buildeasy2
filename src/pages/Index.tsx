@@ -4,6 +4,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import QuestionnaireForm from '@/components/QuestionnaireForm';
 import ServiceGroups from '@/components/ServiceGroups';
+import { AuthButton } from '@/components/AuthButton';
 import { Sparkles, Home, Users, Zap, ChevronRight } from 'lucide-react';
 type Step = 'initial' | 'questionnaire' | 'services';
 interface ProjectData {
@@ -109,12 +110,20 @@ const Index = () => {
       {/* Hero Section */}
       <div className="container mx-auto px-4 pt-8 pb-20">
         <div className="max-w-4xl mx-auto text-center space-y-8">
-          {/* Logo/Brand */}
-          <div className="flex items-center justify-center space-x-2 mb-16">
-            <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
-              <Home className="w-6 h-6 text-white bg-[#000a0e]/0" />
+          {/* Header with Auth Buttons */}
+          <div className="flex items-center justify-between w-full mb-16">
+            <div className="flex items-center space-x-2">
+              <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
+                <Home className="w-6 h-6 text-white bg-[#000a0e]/0" />
+              </div>
+              <span className="text-2xl font-bold">BuildEasy</span>
             </div>
-            <span className="text-2xl font-bold">BuildEasy</span>
+            
+            {/* Auth Buttons */}
+            <div className="flex items-center gap-3">
+              <AuthButton variant="client" />
+              <AuthButton variant="vendor" />
+            </div>
           </div>
 
           {/* Main Headline */}

@@ -14,7 +14,262 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      messages: {
+        Row: {
+          file_url: string | null
+          id: string
+          message_content: string
+          message_type: Database["public"]["Enums"]["message_type"] | null
+          quote_request_id: string
+          read_status: boolean | null
+          recipient_id: string
+          sender_id: string
+          sent_at: string
+        }
+        Insert: {
+          file_url?: string | null
+          id?: string
+          message_content: string
+          message_type?: Database["public"]["Enums"]["message_type"] | null
+          quote_request_id: string
+          read_status?: boolean | null
+          recipient_id: string
+          sender_id: string
+          sent_at?: string
+        }
+        Update: {
+          file_url?: string | null
+          id?: string
+          message_content?: string
+          message_type?: Database["public"]["Enums"]["message_type"] | null
+          quote_request_id?: string
+          read_status?: boolean | null
+          recipient_id?: string
+          sender_id?: string
+          sent_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_quote_request_id_fkey"
+            columns: ["quote_request_id"]
+            isOneToOne: false
+            referencedRelation: "quote_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          avatar_url: string | null
+          company_name: string | null
+          created_at: string
+          email_verified: boolean | null
+          full_name: string | null
+          id: string
+          onboarding_completed: boolean | null
+          phone_number: string | null
+          updated_at: string
+          user_id: string
+          user_type: Database["public"]["Enums"]["user_type"]
+        }
+        Insert: {
+          address?: string | null
+          avatar_url?: string | null
+          company_name?: string | null
+          created_at?: string
+          email_verified?: boolean | null
+          full_name?: string | null
+          id?: string
+          onboarding_completed?: boolean | null
+          phone_number?: string | null
+          updated_at?: string
+          user_id: string
+          user_type?: Database["public"]["Enums"]["user_type"]
+        }
+        Update: {
+          address?: string | null
+          avatar_url?: string | null
+          company_name?: string | null
+          created_at?: string
+          email_verified?: boolean | null
+          full_name?: string | null
+          id?: string
+          onboarding_completed?: boolean | null
+          phone_number?: string | null
+          updated_at?: string
+          user_id?: string
+          user_type?: Database["public"]["Enums"]["user_type"]
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          budget_range: string | null
+          client_id: string
+          created_at: string
+          description: string
+          form_data: Json | null
+          id: string
+          location: string | null
+          project_type: string | null
+          service_groups: string[] | null
+          status: Database["public"]["Enums"]["project_status"] | null
+          timeline: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          budget_range?: string | null
+          client_id: string
+          created_at?: string
+          description: string
+          form_data?: Json | null
+          id?: string
+          location?: string | null
+          project_type?: string | null
+          service_groups?: string[] | null
+          status?: Database["public"]["Enums"]["project_status"] | null
+          timeline?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          budget_range?: string | null
+          client_id?: string
+          created_at?: string
+          description?: string
+          form_data?: Json | null
+          id?: string
+          location?: string | null
+          project_type?: string | null
+          service_groups?: string[] | null
+          status?: Database["public"]["Enums"]["project_status"] | null
+          timeline?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      quote_requests: {
+        Row: {
+          client_id: string
+          created_at: string
+          estimated_timeline: string | null
+          id: string
+          project_id: string
+          quoted_amount: number | null
+          responded_at: string | null
+          response_deadline: string | null
+          status: Database["public"]["Enums"]["quote_status"] | null
+          updated_at: string
+          vendor_id: string
+          vendor_notes: string | null
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          estimated_timeline?: string | null
+          id?: string
+          project_id: string
+          quoted_amount?: number | null
+          responded_at?: string | null
+          response_deadline?: string | null
+          status?: Database["public"]["Enums"]["quote_status"] | null
+          updated_at?: string
+          vendor_id: string
+          vendor_notes?: string | null
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          estimated_timeline?: string | null
+          id?: string
+          project_id?: string
+          quoted_amount?: number | null
+          responded_at?: string | null
+          response_deadline?: string | null
+          status?: Database["public"]["Enums"]["quote_status"] | null
+          updated_at?: string
+          vendor_id?: string
+          vendor_notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quote_requests_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_profiles: {
+        Row: {
+          availability_status: boolean | null
+          bio: string | null
+          business_name: string
+          created_at: string
+          id: string
+          license_number: string | null
+          location: string | null
+          portfolio_images: Json | null
+          rating: number | null
+          response_time_hours: number | null
+          services_offered: Json | null
+          specialty: string[] | null
+          total_reviews: number | null
+          updated_at: string
+          user_id: string
+          verification_status:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          years_experience: number | null
+        }
+        Insert: {
+          availability_status?: boolean | null
+          bio?: string | null
+          business_name: string
+          created_at?: string
+          id?: string
+          license_number?: string | null
+          location?: string | null
+          portfolio_images?: Json | null
+          rating?: number | null
+          response_time_hours?: number | null
+          services_offered?: Json | null
+          specialty?: string[] | null
+          total_reviews?: number | null
+          updated_at?: string
+          user_id: string
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          years_experience?: number | null
+        }
+        Update: {
+          availability_status?: boolean | null
+          bio?: string | null
+          business_name?: string
+          created_at?: string
+          id?: string
+          license_number?: string | null
+          location?: string | null
+          portfolio_images?: Json | null
+          rating?: number | null
+          response_time_hours?: number | null
+          services_offered?: Json | null
+          specialty?: string[] | null
+          total_reviews?: number | null
+          updated_at?: string
+          user_id?: string
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          years_experience?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +278,16 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      message_type: "text" | "file" | "quote" | "system"
+      project_status:
+        | "draft"
+        | "active"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
+      quote_status: "pending" | "quoted" | "accepted" | "declined" | "expired"
+      user_type: "client" | "vendor"
+      verification_status: "pending" | "verified" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +414,18 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      message_type: ["text", "file", "quote", "system"],
+      project_status: [
+        "draft",
+        "active",
+        "in_progress",
+        "completed",
+        "cancelled",
+      ],
+      quote_status: ["pending", "quoted", "accepted", "declined", "expired"],
+      user_type: ["client", "vendor"],
+      verification_status: ["pending", "verified", "rejected"],
+    },
   },
 } as const
