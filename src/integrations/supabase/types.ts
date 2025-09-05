@@ -308,6 +308,27 @@ export type Database = {
           years_experience: number
         }[]
       }
+      get_safe_vendor_profiles: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          availability_status: boolean
+          bio: string
+          business_name: string
+          id: string
+          location: string
+          rating: number
+          services_offered: Json
+          specialty: string[]
+          total_reviews: number
+          user_id: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
+          years_experience: number
+        }[]
+      }
+      get_user_role: {
+        Args: { user_uuid: string }
+        Returns: Database["public"]["Enums"]["user_type"]
+      }
     }
     Enums: {
       message_type: "text" | "file" | "quote" | "system"
