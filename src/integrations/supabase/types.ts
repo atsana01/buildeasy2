@@ -349,10 +349,7 @@ export type Database = {
       }
     }
     Functions: {
-      can_access_vendor_sensitive_data: {
-        Args: { vendor_user_id: string }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
       message_type: "text" | "file" | "quote" | "system"
