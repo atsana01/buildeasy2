@@ -60,17 +60,23 @@ const mockVendors: { [key: string]: Vendor[] } = {
 const generateMockVendors = (groupName: string): Vendor[] => {
   if (mockVendors[groupName]) return mockVendors[groupName];
   
-  return Array.from({ length: 5 }, (_, i) => ({
-    id: `${groupName.toLowerCase().replace(/\s+/g, '-')}-${i + 1}`,
-    name: `${groupName} Pro ${i + 1}`,
-    rating: 4.5 + Math.random() * 0.4,
-    reviews: Math.floor(Math.random() * 200) + 50,
-    location: ['Downtown', 'North District', 'South Area', 'East Side', 'West End'][i],
-    specialty: `${groupName} Services`,
-    avgPrice: '$2,000 - $5,000',
-    deliveryTime: '2-6 weeks',
-    verified: Math.random() > 0.3
-  }));
+  // Use a consistent seed based on group name to avoid random changes
+  const seed = groupName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  
+  return Array.from({ length: 5 }, (_, i) => {
+    const vendorSeed = seed + i;
+    return {
+      id: `${groupName.toLowerCase().replace(/\s+/g, '-')}-${i + 1}`,
+      name: `${groupName} Pro ${i + 1}`,
+      rating: 4.5 + (vendorSeed % 4) * 0.1,
+      reviews: 50 + (vendorSeed % 150),
+      location: ['Downtown', 'North District', 'South Area', 'East Side', 'West End'][i],
+      specialty: `${groupName} Services`,
+      avgPrice: '$2,000 - $5,000',
+      deliveryTime: '2-6 weeks',
+      verified: (vendorSeed % 10) > 3
+    };
+  });
 };
 
 const ServiceGroups: React.FC<ServiceGroupsProps> = ({ serviceGroups, onVendorSelect, projectDescription = '', formData = {} }) => {

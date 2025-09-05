@@ -29,7 +29,7 @@ const SendMessageModal = ({ ticket, isOpen, onClose }: SendMessageModalProps) =>
     {
       id: '1',
       sender: 'user',
-      content: `Hi ${ticket?.vendor?.displayName || ticket?.vendor?.name || 'there'}, I've submitted a quote request for ${ticket?.groupName}. Please let me know if you need any additional information.`,
+      content: `Hi ${ticket?.vendor?.name || 'there'}, I've submitted a quote request for ${ticket?.groupName}. Please let me know if you need any additional information.`,
       timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
     },
   ]);
@@ -72,7 +72,7 @@ const SendMessageModal = ({ ticket, isOpen, onClose }: SendMessageModalProps) =>
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[95vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
             <MessageCircle className="w-5 h-5 text-primary" />
@@ -138,28 +138,29 @@ const SendMessageModal = ({ ticket, isOpen, onClose }: SendMessageModalProps) =>
           {/* Message Input */}
           <div className="border-t pt-6 space-y-4">
             <div className="space-y-3">
-              <Label htmlFor="message" className="text-base font-medium">Compose Message</Label>
+              <Label htmlFor="message" className="text-base font-medium">Your Message</Label>
               <Textarea
                 id="message"
                 placeholder="Type your message here... (Ctrl+Enter to send)"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={handleKeyPress}
-                className="min-h-[120px] text-base resize-none border-2 focus:border-primary rounded-lg p-4"
+                className="min-h-[140px] text-base resize-none border-2 focus:border-primary rounded-lg p-4 bg-background"
               />
             </div>
             <div className="flex justify-between items-center">
               <p className="text-xs text-muted-foreground">
                 Press Ctrl+Enter to send quickly
               </p>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={onClose}>
+              <div className="flex gap-3">
+                <Button variant="outline" onClick={onClose} size="lg">
                   Close
                 </Button>
                 <Button 
                   onClick={handleSendMessage} 
                   disabled={!message.trim() || isLoading}
                   className="bg-gradient-primary"
+                  size="lg"
                 >
                   <Send className="w-4 h-4 mr-2" />
                   Send Message

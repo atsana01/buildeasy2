@@ -129,7 +129,7 @@ const Index = () => {
           </div>
 
           {/* Main Input Area */}
-          <Card className="max-w-3xl mx-auto shadow-elegant bg-background/70 backdrop-blur-sm border border-white/20">
+          <Card className="max-w-3xl mx-auto shadow-elegant bg-transparent backdrop-blur-sm border border-white/20">
             <CardContent className="p-8">
               <div className="space-y-6">
                 <div className="space-y-3">
@@ -144,34 +144,34 @@ const Index = () => {
                   />
                 </div>
                 
+                {/* Example Projects - moved here */}
+                <div className="text-center">
+                  <h2 className="text-lg font-semibold mb-3">Try these examples:</h2>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {["4 bedroom modern house, 2 large baths, landscaped garden and pool", "Large modern house with 2 bedrooms and a single shower with an indoor pool", "Minimalistic house, 2 bedrooms, 1 bath, garden", "Large complex, 15 units of single bedroom houses, underground parking"].map((example, index) => (
+                      <Button 
+                        key={index} 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => setProjectData({
+                          description: example
+                        })} 
+                        className="text-xs hover:border-primary hover:text-primary"
+                      >
+                        {example}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+                
                 <div className="flex justify-center">
-                  <Button onClick={handleProjectSubmit} disabled={!projectData.description.trim()} size="sm" className="bg-gradient-primary border-0 px-8">
+                  <Button onClick={handleProjectSubmit} disabled={!projectData.description.trim()} size="sm" className="bg-gradient-primary border-0 px-6">
                     Build
                   </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
-
-          {/* Example Projects */}
-          <div className="mt-8 text-center">
-            <h2 className="text-xl font-semibold mb-4">Try these examples:</h2>
-            <div className="flex flex-wrap justify-center gap-3">
-              {["4 bedroom modern house, 2 large baths, landscaped garden and pool", "Large modern house with 2 bedrooms and a single shower with an indoor pool", "Minimalistic house, 2 bedrooms, 1 bath, garden", "Large complex, 15 units of single bedroom houses, underground parking"].map((example, index) => (
-                <Button 
-                  key={index} 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => setProjectData({
-                    description: example
-                  })} 
-                  className="text-sm hover:border-primary hover:text-primary"
-                >
-                  {example}
-                </Button>
-              ))}
-            </div>
-          </div>
 
           {/* Feature Cards */}
           <div className="grid md:grid-cols-3 gap-6 mt-16 max-w-5xl mx-auto">
@@ -180,7 +180,7 @@ const Index = () => {
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Sparkles className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-semibold text-lg mb-2">AI-Powered Matching</h3>
+                <h3 className="font-semibold text-lg mb-2">Smart Matching</h3>
                 <p className="text-muted-foreground text-sm">
                   Our intelligent system analyzes your project and matches you with the most suitable professionals.
                 </p>
