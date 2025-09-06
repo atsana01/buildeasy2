@@ -287,6 +287,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_public_vendor_directory: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          business_name: string
+          id: string
+          location: string
+          rating: number
+          specialty: string[]
+          total_reviews: number
+          user_id: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
+        }[]
+      }
       get_public_vendor_profiles: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -328,6 +341,31 @@ export type Database = {
       get_user_role: {
         Args: { user_uuid: string }
         Returns: Database["public"]["Enums"]["user_type"]
+      }
+      get_vendor_for_quote_request: {
+        Args: { quote_request_id_param: string }
+        Returns: {
+          bio: string
+          business_name: string
+          id: string
+          location: string
+          portfolio_images: Json
+          rating: number
+          response_time_hours: number
+          services_offered: Json
+          specialty: string[]
+          total_reviews: number
+          user_id: string
+          years_experience: number
+        }[]
+      }
+      log_vendor_profile_access: {
+        Args: {
+          access_type: string
+          accessing_user_id: string
+          vendor_user_id: string
+        }
+        Returns: undefined
       }
     }
     Enums: {
