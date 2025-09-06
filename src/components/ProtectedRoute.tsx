@@ -42,6 +42,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
           // Check if user has required role
           if (requiredUserType && dbUserType !== requiredUserType) {
+            toast.error(`Access denied. This area is for ${requiredUserType}s only.`);
             // Redirect to appropriate dashboard
             if (dbUserType === 'client') {
               navigate('/dashboard');

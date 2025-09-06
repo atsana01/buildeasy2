@@ -25,7 +25,9 @@ import {
   MessageSquare,
   Trash2,
   ExternalLink,
-  User
+  User,
+  Settings,
+  Plus
 } from 'lucide-react';
 
 interface Ticket {
@@ -139,13 +141,9 @@ const Tickets = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" onClick={handleBackToProject}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Projects
-            </Button>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Quote Tickets
+                Client Dashboard
               </h1>
               <p className="text-muted-foreground mt-1">
                 Track your quote requests and vendor responses
@@ -153,10 +151,16 @@ const Tickets = () => {
             </div>
           </div>
           
-          <Button onClick={handleRefreshVendors} variant="outline">
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Refresh Vendors
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button onClick={() => navigate('/profile')} variant="outline">
+              <Settings className="w-4 h-4 mr-2" />
+              Profile Settings
+            </Button>
+            <Button onClick={handleBackToProject} className="bg-gradient-primary">
+              <Plus className="w-4 h-4 mr-2" />
+              New Project
+            </Button>
+          </div>
         </div>
 
         {/* Filters */}

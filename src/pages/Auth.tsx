@@ -11,6 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useQuoteForm } from '@/contexts/QuoteFormContext';
 import { toast } from '@/hooks/use-toast';
 import { Home, Mail, Lock, User, Building } from 'lucide-react';
 import { 
@@ -56,8 +57,10 @@ const Auth = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { setWasRedirectedFromAuth, wasRedirectedFromAuth } = useQuoteForm();
   const [loading, setLoading] = useState(false);
   const initialUserType = searchParams.get('type') === 'vendor' ? 'vendor' : 'client';
+  const redirectParam = searchParams.get('redirect');
 
   const loginForm = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -89,20 +92,54 @@ const Auth = () => {
             .eq('user_id', user.id)
             .single();
           
-          if (data?.user_type === 'vendor') {
-            navigate('/vendor-dashboard');
-          } else {
+          // Validate user type matches the auth context
+          const userType = data?.user_type;
+          
+          // Prevent clients from accessing vendor areas and vice versa
+          if (initialUserType === 'vendor' && userType === 'client') {
+            toast({
+              title: 'Access Denied',
+              description: 'You cannot access vendor areas with a client account.',
+              variant: 'destructive'
+            });
             navigate('/dashboard');
+            return;
+          }
+          
+          if (initialUserType === 'client' && userType === 'vendor') {
+            toast({
+              title: 'Access Denied', 
+              description: 'You cannot access client areas with a vendor account.',
+              variant: 'destructive'
+            });
+            navigate('/vendor-dashboard');
+            return;
+          }
+          
+          // Redirect based on context
+          if (redirectParam === 'quote' || wasRedirectedFromAuth) {
+            // User was redirected from quote flow
+            if (userType === 'client') {
+              navigate('/');
+            } else {
+              navigate('/vendor-dashboard');
+            }
+          } else {
+            // Normal login redirect
+            if (userType === 'vendor') {
+              navigate('/vendor-dashboard');
+            } else {
+              navigate('/dashboard');
+            }
           }
         } catch (error) {
-          // Fallback to dashboard if profile not found
           navigate('/dashboard');
         }
       }
     };
 
     redirectUser();
-  }, [user, navigate]);
+  }, [user, navigate, initialUserType, redirectParam, wasRedirectedFromAuth]);
 
   const handleLogin = async (data: LoginForm) => {
     setLoading(true);
@@ -113,6 +150,24 @@ const Auth = () => {
       });
 
       if (error) throw error;
+      
+      // Check user type matches expected type
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('user_type')
+        .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
+        .single();
+      
+      if (profile && initialUserType !== profile.user_type) {
+        await supabase.auth.signOut();
+        toast({
+          title: 'Access Denied',
+          description: `This account is registered as a ${profile.user_type}. Please use the correct login option.`,
+          variant: 'destructive'
+        });
+        setLoading(false);
+        return;
+      }
       
       toast({ title: 'Welcome back!', description: 'You have been signed in successfully.' });
     } catch (error: any) {
@@ -129,6 +184,11 @@ const Auth = () => {
   const handleSignup = async (data: SignupForm) => {
     setLoading(true);
     try {
+      // Store auth redirect state if coming from quote flow
+      if (redirectParam === 'quote') {
+        setWasRedirectedFromAuth(true);
+      }
+      
       const { error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
@@ -166,6 +226,11 @@ const Auth = () => {
   const handleGoogleSignIn = async (userType: 'client' | 'vendor') => {
     setLoading(true);
     try {
+      // Store auth redirect state if coming from quote flow
+      if (redirectParam === 'quote') {
+        setWasRedirectedFromAuth(true);
+      }
+      
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {

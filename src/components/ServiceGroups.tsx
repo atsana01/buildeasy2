@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { useAuth } from '@/contexts/AuthContext';
+import { useQuoteForm } from '@/contexts/QuoteFormContext';
 import { Building2, Users, Star, MapPin, CheckCircle2, Clock, DollarSign } from 'lucide-react';
 
 interface Vendor {
@@ -81,11 +83,20 @@ const generateMockVendors = (groupName: string): Vendor[] => {
 
 const ServiceGroups: React.FC<ServiceGroupsProps> = ({ serviceGroups, onVendorSelect, projectDescription = '', formData = {} }) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { setWasRedirectedFromAuth } = useQuoteForm();
   const [selectedVendors, setSelectedVendors] = useState<{ [key: string]: string[] }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmitQuotes = async () => {
+    // Check if user is authenticated
+    if (!user) {
+      setWasRedirectedFromAuth(true);
+      navigate('/auth?type=client&redirect=quote');
+      return;
+    }
+
     setIsSubmitting(true);
     
     // Create tickets for each selected vendor

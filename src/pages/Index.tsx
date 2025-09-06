@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import QuestionnaireForm from '@/components/QuestionnaireForm';
 import ServiceGroups from '@/components/ServiceGroups';
 import { AuthButton } from '@/components/AuthButton';
+import { useAuth } from '@/contexts/AuthContext';
+import { useQuoteForm } from '@/contexts/QuoteFormContext';
 import { Sparkles, Home, Users, Zap, ChevronRight } from 'lucide-react';
-type Step = 'initial' | 'questionnaire' | 'services';
-interface ProjectData {
-  description: string;
-  formData?: any;
-  serviceGroups?: string[];
-}
 const Index = () => {
-  const [currentStep, setCurrentStep] = useState<Step>('initial');
-  const [projectData, setProjectData] = useState<ProjectData>({
-    description: ''
-  });
-  const [selectedTickets, setSelectedTickets] = useState<any[]>([]);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { 
+    currentStep, 
+    setCurrentStep, 
+    projectData, 
+    setProjectData, 
+    selectedTickets, 
+    setSelectedTickets,
+    setWasRedirectedFromAuth,
+    setRedirectPath
+  } = useQuoteForm();
   const [animatedText, setAnimatedText] = useState('3-bedroom modern house');
 
   const textVariations = [
@@ -44,14 +48,23 @@ const Index = () => {
     }
   };
   const handleQuestionnaireComplete = (data: any) => {
-    setProjectData(prev => ({
-      ...prev,
+    setProjectData({
+      ...projectData,
       formData: data,
       serviceGroups: data.serviceGroups
-    }));
+    });
     setCurrentStep('services');
   };
   const handleVendorSelect = (groupName: string, vendor: any) => {
+    // Check if user is authenticated before allowing vendor selection
+    if (!user) {
+      // Store current progress and redirect to auth
+      setWasRedirectedFromAuth(true);
+      setRedirectPath('/');
+      navigate('/auth?type=client&redirect=quote');
+      return;
+    }
+
     const ticket = {
       id: `ticket-${Date.now()}-${Math.random()}`,
       groupName,
@@ -61,7 +74,7 @@ const Index = () => {
       status: 'pending',
       createdAt: new Date()
     };
-    setSelectedTickets(prev => [...prev, ticket]);
+    setSelectedTickets([...selectedTickets, ticket]);
   };
   const handleStartOver = () => {
     setCurrentStep('initial');
