@@ -1,14 +1,13 @@
 import { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuoteForm } from '@/contexts/QuoteFormContext';
 import { toast } from 'sonner';
 
 export const EmailConfirmationHandler = () => {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const { user } = useAuth();
-  const { wasRedirectedFromAuth, redirectPath, setWasRedirectedFromAuth } = useQuoteForm();
+  const { wasRedirectedFromAuth, setWasRedirectedFromAuth } = useQuoteForm();
 
   useEffect(() => {
     const handleEmailConfirmation = async () => {
@@ -19,7 +18,6 @@ export const EmailConfirmationHandler = () => {
         toast.error('Email verification failed', {
           description: errorDescription || 'Please try again or contact support.'
         });
-        navigate('/auth');
         return;
       }
 
@@ -36,23 +34,21 @@ export const EmailConfirmationHandler = () => {
           });
 
           if (wasRedirectedFromAuth) {
-            // Show additional message about quote submission
+            // Show additional message about quote submission and stay on current page
             setTimeout(() => {
-              navigate('/tickets');
               setWasRedirectedFromAuth(false);
+              // User stays on the current page (likely the quote page)
             }, 2500);
           } else {
-            // Regular redirect to dashboard based on user type
-            setTimeout(() => {
-              navigate('/tickets'); // All clients go to tickets (which is now the main dashboard)
-            }, 1500);
+            // For regular signups, user stays on current page
+            // Dashboard access can be done via navigation
           }
         }
       }
     };
 
     handleEmailConfirmation();
-  }, [searchParams, navigate, user, wasRedirectedFromAuth, redirectPath, setWasRedirectedFromAuth]);
+  }, [searchParams, user, wasRedirectedFromAuth, setWasRedirectedFromAuth]);
 
   return null;
 };

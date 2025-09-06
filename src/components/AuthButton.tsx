@@ -64,30 +64,5 @@ export const AuthButton: React.FC<AuthButtonProps> = ({ variant }) => {
     );
   }
 
-  // Show both login options only if no user is logged in
-  if (!user && !variant) {
-    return (
-      <div className="flex items-center gap-3">
-        <Button asChild variant="outline" size="sm">
-          <Link to="/auth?type=client">Client Login</Link>
-        </Button>
-        <Button asChild variant="outline" size="sm">
-          <Link to="/auth?type=vendor">Vendor Login</Link>
-        </Button>
-      </div>
-    );
-  }
-
-  // Show specific login button when variant is provided
-  if (!user && variant) {
-    return (
-      <Button asChild variant="outline" className="gap-2">
-        <Link to={`/auth?type=${variant}`}>
-          {variant === 'client' ? 'Client Login' : 'Vendor Login'}
-        </Link>
-      </Button>
-    );
-  }
-
   return null;
 };

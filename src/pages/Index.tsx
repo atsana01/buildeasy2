@@ -6,6 +6,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import QuestionnaireForm from '@/components/QuestionnaireForm';
 import ServiceGroups from '@/components/ServiceGroups';
 import { AuthButton } from '@/components/AuthButton';
+import { AuthModal } from '@/components/AuthModal';
+import { Footer } from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuoteForm } from '@/contexts/QuoteFormContext';
 import { Sparkles, Home, Users, Zap, ChevronRight } from 'lucide-react';
@@ -23,6 +25,7 @@ const Index = () => {
     setRedirectPath
   } = useQuoteForm();
   const [animatedText, setAnimatedText] = useState('3-bedroom modern house');
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const textVariations = [
     '4 bedroom modern house, 2 large baths, landscaped garden and pool',
@@ -58,10 +61,10 @@ const Index = () => {
   const handleVendorSelect = (groupName: string, vendor: any) => {
     // Check if user is authenticated before allowing vendor selection
     if (!user) {
-      // Store current progress and redirect to auth
+      // Store current progress and show auth modal
       setWasRedirectedFromAuth(true);
       setRedirectPath('/');
-      navigate('/auth?type=client&redirect=quote');
+      setShowAuthModal(true);
       return;
     }
 
@@ -132,8 +135,14 @@ const Index = () => {
               <span className="text-2xl font-bold">BuildEasy</span>
             </div>
             
-            {/* Auth Button */}
-            <AuthButton />
+            {/* Single Login/Signup Button */}
+            {!user ? (
+              <Button onClick={() => setShowAuthModal(true)} variant="outline">
+                Login / Sign Up
+              </Button>
+            ) : (
+              <AuthButton />
+            )}
           </div>
 
           {/* Main Headline */}
@@ -233,6 +242,20 @@ const Index = () => {
 
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer />
+
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)}
+        userType="client"
+        onSuccess={() => {
+          setShowAuthModal(false);
+          // Continue with the vendor selection process
+        }}
+      />
     </div>;
 };
 export default Index;

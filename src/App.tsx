@@ -13,6 +13,12 @@ import VendorDashboard from "./pages/VendorDashboard";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import Tickets from "./pages/Tickets";
+import FAQ from "./pages/FAQ";
+import Contact from "./pages/Contact";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import Cookies from "./pages/Cookies";
+import AcceptableUse from "./pages/AcceptableUse";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -29,6 +35,12 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/cookies" element={<Cookies />} />
+              <Route path="/acceptable-use" element={<AcceptableUse />} />
               <Route path="/dashboard" element={
                 <ProtectedRoute requiredUserType="client">
                   <Tickets />
